@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Vue</title>
+  </head>
+  <body>
+    <h1>My Vue</h1>
+    <div id="app">
+      <button id="btn_a">change a</button>
+      <button id="btn_list">change list</button>
+    </div>
+    <script src="./src/main.js" type="module" defer></script>
+    <script>
+      const data = {
+        a: 1,
+        b: "da",
+      };
+
+      // Object.defineProperty(data, "a", {
+      //   get() {
+      //     console.log("获取值");
+      //     return data.a;
+      //   },
+      //   set(newValue) {
+      //     if (newValue === data.a) return;
+      //     console.log("设置值");
+      //     data.a = newValue;
+      //   },
+      // });
+
+      console.log(data);
+
+      const arrayProto = Array.prototype;
+      const arrayMethods = Object.create(arrayProto);
+      console.log(arrayMethods, arrayMethods.__proto__ == arrayProto);
+
+      class Observer {
+        constructor(data) {
+          // 那么我们首先可以根据这个属性来防止已经被响应式观察的数据反复被观测
+          // 响应式数据可以使用__ob__来获取 Observer 实例的相关方法,这对数组很关键
+          Object.defineProperty(data, "__ob__", {
+            value: this,
+            enumerable: false,
+            writable: true,
+            configurable: true,
+          });
+
+          console.log(this, data, data.__ob__, "this - data");
+        }
+      }
+
+      new Observer([1, 2, 3, 4]);
+    </script>
+  </body>
+</html>
