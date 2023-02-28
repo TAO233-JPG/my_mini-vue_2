@@ -3,6 +3,8 @@
 ## 学习资料
 [【手写Vue2.0源码】前端鲨鱼哥 | 掘金](https://juejin.cn/post/6935344605424517128#heading-2)
 
+[【个人笔记】| 飞书](https://bi20oeq353.feishu.cn/mindnotes/bmncnNVbdFscs2ozQrXCu6ZQbvg#outline)
+
 ## 目标
 + 响应式数据  **✔ 2023/2/28**
 + 模板编译  
