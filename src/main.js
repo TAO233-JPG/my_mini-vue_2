@@ -22,3 +22,5 @@ document.querySelector("#btn_a").addEventListener("click", () => {
 document.querySelector("#btn_list").addEventListener("click", () => {
   options.data.list.push(options.data.list.length + 1);
 });
+
+console.log("app", app);

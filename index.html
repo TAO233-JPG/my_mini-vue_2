@@ -8,7 +8,13 @@
   </head>
   <body>
     <h1>My Vue</h1>
-    <div id="app">
+    <div id="app" style="height: 100px" class="content">
+      <div>a: <span>{{a}}</span></div>
+      <div>list: <span>{{list}}</span></div>
+      <div>
+        cat name: <span>pre-out{{'pre' +cat.name + 'str'}} ---</span><br />
+        age: <span>{{cat.age}}</span>
+      </div>
       <button id="btn_a">change a</button>
       <button id="btn_list">change list</button>
     </div>
@@ -30,29 +36,6 @@
       //     data.a = newValue;
       //   },
       // });
-
-      console.log(data);
-
-      const arrayProto = Array.prototype;
-      const arrayMethods = Object.create(arrayProto);
-      console.log(arrayMethods, arrayMethods.__proto__ == arrayProto);
-
-      class Observer {
-        constructor(data) {
-          // 那么我们首先可以根据这个属性来防止已经被响应式观察的数据反复被观测
-          // 响应式数据可以使用__ob__来获取 Observer 实例的相关方法,这对数组很关键
-          Object.defineProperty(data, "__ob__", {
-            value: this,
-            enumerable: false,
-            writable: true,
-            configurable: true,
-          });
-
-          console.log(this, data, data.__ob__, "this - data");
-        }
-      }
-
-      new Observer([1, 2, 3, 4]);
     </script>
   </body>
 </html>
