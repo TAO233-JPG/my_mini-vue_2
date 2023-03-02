@@ -1,5 +1,7 @@
 import initState from "./state";
 import compileToFunction from "./compiler";
+import renderMixin from "./render";
+import mountComponent, { lifecycleMixin } from "./lifecycle";
 
 function My_Vue(options) {
   this._init(options);
@@ -38,6 +40,10 @@ My_Vue.prototype.$mount = function (el) {
       options.render = render;
     }
   }
+
+  return mountComponent(vm, element);
 };
 
+renderMixin(My_Vue);
+lifecycleMixin(My_Vue);
 export default My_Vue;

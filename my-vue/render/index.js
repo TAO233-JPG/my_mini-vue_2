@@ -1,0 +1,27 @@
+import { createElement, createTextNode } from "../vnode";
+
+export default function renderMixin(vm) {
+  vm.prototype._render = function (el) {
+    const vm = this;
+    const render = vm.$options.render;
+    const vnode = render.call(vm);
+    return vnode;
+  };
+
+  // 创建虚拟dom
+  vm.prototype._c = function (...args) {
+    return createElement(...args);
+  };
+  // 创建虚拟文本节点
+  vm.prototype._v = function (text) {
+    return createTextNode(text);
+  };
+  // 处理变量属性
+  vm.prototype._s = function (val) {
+    return val === null
+      ? ""
+      : typeof val === "object"
+      ? JSON.stringify(val)
+      : val;
+  };
+}
