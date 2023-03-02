@@ -14,13 +14,13 @@ const options = {
 const app = new My_Vue(options);
 
 // 响应式test
-// document.querySelector("#btn_a").addEventListener("click", () => {
-//   app.a += 2;
-//   app.cat.age += 2;
-//   app.cat.name += 2;
-// });
-// document.querySelector("#btn_list").addEventListener("click", () => {
-//   options.data.list.push(options.data.list.length + 1);
-// });
+document.querySelector("#btn_a").addEventListener("click", () => {
+  app.a += 1;
+  app.cat.age += 2;
+  app.cat.name += 3;
+});
+document.querySelector("#btn_list").addEventListener("click", () => {
+  options.data.list.push(options.data.list.length + 1);
+});
 
 console.log("app", app);
