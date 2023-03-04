@@ -1,23 +1,25 @@
+import nextTick from "../utils/nextTick";
 import { createElement, createTextNode } from "../vnode";
 
-export default function renderMixin(vm) {
-  vm.prototype._render = function (el) {
+export default function renderMixin(Vue) {
+  Vue.prototype._render = function (el) {
     const vm = this;
     const render = vm.$options.render;
     const vnode = render.call(vm);
     return vnode;
   };
 
+  Vue.prototype.$nextTick = nextTick;
   // 创建虚拟dom
-  vm.prototype._c = function (...args) {
+  Vue.prototype._c = function (...args) {
     return createElement(...args);
   };
   // 创建虚拟文本节点
-  vm.prototype._v = function (text) {
+  Vue.prototype._v = function (text) {
     return createTextNode(text);
   };
   // 处理变量属性
-  vm.prototype._s = function (val) {
+  Vue.prototype._s = function (val) {
     return val === null
       ? ""
       : typeof val === "object"
