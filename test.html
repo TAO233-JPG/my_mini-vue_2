@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // Watcher.js
+      let id = 1;
+      class Watcher {
+        constructor() {
+          this.id = id++;
+        }
+        update() {
+          // 每次watcher进行更新的时候  是否可以让他们先缓存起来  之后再一起调用
+          // 异步队列机制
+          queueWatcher(this);
+        }
+        run() {
+          // 真正的触发更新
+          console.log(`watch[${this.id}] run`);
+        }
+      }
+
+      // src/observer/scheduler.js
+      let queue = [];
+      let has = {};
+      function flushSchedulerQueue() {
+        console.log(`flushSchedulerQueue | queue`, queue);
+        for (let index = 0; index < queue.length; index++) {
+          //   调用watcher的run方法 执行真正的更新操作
+          queue[index].run();
+        }
+        // 执行完之后清空队列
+        queue = [];
+        has = {};
+      }
+
+      // 实现异步队列机制
+      function queueWatcher(watcher) {
+        console.log('queueWatcher', watcher.id);
+        const id = watcher.id;
+        //   watcher去重
+        if (has[id] === undefined) {
+          //  同步代码执行 把全部的watcher都放到队列里面去
+          queue.push(watcher);
+          has[id] = true;
+          // 进行异步调用
+          nextTick(flushSchedulerQueue);
+        }
+      }
+
+      // src/util/next-tick.js
+      let callbacks = [];
+      let pending = false;
+      function flushCallbacks() {
+        pending = false; //把标志还原为false
+        // 依次执行回调
+        console.log(' = flushCallbacks | callbacks', callbacks);
+        for (let i = 0; i < callbacks.length; i++) {
+          callbacks[i]();
+        }
+      }
+
+      const p = Promise.resolve();
+      //定义异步方法  采用优雅降级
+      const timerFunc = () => {
+        console.log('ONCE = ,timerFunc');
+        p.then(flushCallbacks);
+      };
+
+      function nextTick(cb) {
+        // 除了渲染watcher  还有用户自己手动调用的nextTick 一起被收集到数组
+        callbacks.push(cb);
+        console.log('nextTick');
+        if (!pending) {
+          console.log('nextTick // !pending');
+          // 如果多次调用nextTick  只会执行一次异步 等异步队列清空之后再把标志变为false
+          pending = true;
+          timerFunc();
+        }
+      }
+
+      const w1 = new Watcher();
+      const w2 = new Watcher();
+      const w3 = new Watcher();
+
+      console.log(`=== before timer`);
+      w1.update();
+      w1.update();
+      w2.update();
+      w1.update();
+      w3.update();
+
+      setTimeout(() => {
+        console.log("===== timer =====");
+        w1.update();
+        w1.update();
+        w1.update();
+        w2.update();
+        w2.update();
+        w2.update();
+      }, 1000);
+
+      console.log(`=== after timer`);
+
+      w2.update();
+      w1.update();
+      w1.update();
+      w1.update();
+      w2.update();
+      w2.update();
+      w3.update();
+
+
+      // 1_7_6_8_2_4_3_5_9_11_10_12 
+    </script>
+  </body>
+</html>
