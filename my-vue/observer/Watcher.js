@@ -1,5 +1,5 @@
 import { pushTarget, popTarget } from "./Dep";
-
+import { queueWatcher } from "./scheduler";
 let id = 0;
 
 export default class Watcher {
@@ -34,6 +34,10 @@ export default class Watcher {
     }
   }
   update() {
+    // 每次watcher.update调用时，先缓存起来，之后一起更新
+    queueWatcher(this);
+  }
+  run() {
     this.get();
   }
 }
