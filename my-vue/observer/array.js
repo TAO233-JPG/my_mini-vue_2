@@ -36,6 +36,8 @@ methodsToPatch.forEach((method) => {
 
     if (inserted) ob.observeArray(inserted);
 
+    ob.dep.notify()
+
     return res;
   };
 });

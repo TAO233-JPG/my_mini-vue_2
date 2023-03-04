@@ -9,6 +9,7 @@ const options = {
       age: 12,
       name: "Kk",
     },
+    num: 990
   },
 };
 const app = new My_Vue(options);
@@ -23,4 +24,11 @@ document.querySelector("#btn_list").addEventListener("click", () => {
   options.data.list.push(options.data.list.length + 1);
 });
 
+
+setTimeout(() => {
+  app.a = 33
+  app.a = 332
+  app.a = 3334
+  app.a = 33345
+}, 2000);
 console.log("app", app);

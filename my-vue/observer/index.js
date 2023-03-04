@@ -1,4 +1,5 @@
 import { arrayMethods } from "./array";
+import Dep from "./Dep";
 
 class Observer {
   constructor(data) {
@@ -10,6 +11,7 @@ class Observer {
       writable: true,
       configurable: true,
     });
+    this.dep = new Dep();
     if (Array.isArray(data)) {
       data.__proto__ = arrayMethods;
       this.observeArray(data);
@@ -36,18 +38,34 @@ class Observer {
 }
 
 function defineReactive(obj, key, val) {
-  observe(val); // 递归关键
-
+  const childObserver = observe(val); // 递归关键
+  // 为每个属性配置一个dep
+  const dep = new Dep();
   Object.defineProperty(obj, key, {
     get() {
       console.log(`get: key[${key}]`);
-      return val
+      // 依赖收集
+      if (Dep.target) {
+        dep.depend();
+
+        if (childObserver) {
+          childObserver.dep.depend();
+          if (Array.isArray(val)) {
+            dependArray(val);
+          }
+        }
+      }
+
+      return val;
     },
 
     set(newVal) {
       if (newVal === val) return;
+      // 如果赋值一个新的对象也需要观察
+      observe(newVal);
       console.log(`set: val[${val}] => [${newVal}]`);
       val = newVal;
+      dep.notify(); // 派发更新
     },
   });
 }
@@ -57,6 +75,16 @@ export default function observe(data) {
     Object.prototype.toString.call(data) === "[object Object]" ||
     Array.isArray(data)
   ) {
-    return new Observer(data);
+    const observer = new Observer(data);
+    return observer;
   }
+}
+
+function dependArray(val) {
+  val.forEach((item) => {
+    item && item.__ob__ && item.__ob__.dep.depend();
+    if (Array.isArray(item)) {
+      dependArray(item);
+    }
+  });
 }
