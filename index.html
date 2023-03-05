@@ -10,7 +10,7 @@
 
 <body>
   <h1>My Vue</h1>
-  <div id="app" style="height: 100px" class="content">
+  <div id="app" style="height: 130px" class="content">
     <div>a: <span>{{a}}</span></div>
     <div>list: <span>{{list}}</span></div>
     <div>
@@ -18,9 +18,11 @@
 
     </div>
     <div>age:<span>{{cat.age}}</span></div>
-
+    <div>{{mixinA}}</div>
+    <div>{{mixinB}}</div>
   </div>
-  </div>
+</div>
+<!-- <div>mixin: {{m}}</div> -->
   <button id="btn_a">change a</button>
   <button id="btn_list">change list</button>
   <script src="./src/main.js" type="module" defer></script>

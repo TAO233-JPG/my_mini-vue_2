@@ -1,7 +1,9 @@
 import initState from "./state";
 import compileToFunction from "./compiler";
 import renderMixin from "./render";
-import mountComponent, { lifecycleMixin } from "./lifecycle";
+import mountComponent, { callHook, lifecycleMixin } from "./lifecycle";
+import mergeOptions from "./glabal-api/mergeOption";
+import initGlobalApi from "./glabal-api/initGlobalApi";
 
 function My_Vue(options) {
   this._init(options);
@@ -10,9 +12,11 @@ function My_Vue(options) {
 // 初始化相关操作
 My_Vue.prototype._init = function (options) {
   const vm = this;
-  vm.$options = options;
+  vm.$options = mergeOptions(vm.constructor.options, options);
+  callHook(vm, "beforeCreate");
   // 初始化状态
   initState(vm);
+  callHook(vm, "created");
 
   // 模板编译
   if (vm.$options.el) {
@@ -44,6 +48,7 @@ My_Vue.prototype.$mount = function (el) {
   return mountComponent(vm, element);
 };
 
+initGlobalApi(My_Vue);
 renderMixin(My_Vue);
 lifecycleMixin(My_Vue);
 export default My_Vue;
