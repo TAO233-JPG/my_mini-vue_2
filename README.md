@@ -13,9 +13,11 @@
 - 初始渲染 **✔ 2023/3/2**
 - 渲染更新 **✔ 2023/3/4**
 - 异步更新 **✔ 2023/3/4**
-- diff 算法
+- diff 算法 **✔ 2023/3/5**
 - Mixin 混入
 - 组件
 - 侦听属性 watch
 - 计算属性 computed
 - 全局 apii
+
+[11](https://github.com/maolovecoding/mini-vue2-stage/tree/master/src)

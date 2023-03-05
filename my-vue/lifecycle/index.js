@@ -15,6 +15,12 @@ export default function mountComponent(vm, el) {
 export function lifecycleMixin(vm) {
   vm.prototype._update = function (vnode) {
     const vm = this;
-    vm.$el = patch(vm.$el, vnode);
+    const preVnode = vm._vnode;
+    vm._vnode = vnode;
+    if (preVnode) {
+      vm.$el = patch(preVnode, vnode);
+    } else {
+      vm.$el = patch(vm.$el, vnode);
+    }
   };
 }
