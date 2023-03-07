@@ -9,10 +9,12 @@ export default class Watcher {
     this.vm = vm;
     this.exprOrFn = exprOrFn;
     this.cb = cb; // 回调函数，如在watcher更新之前可以执行beforeUpdate方法
-
     this.deps = [];
     this.depsId = new Set();
+
     this.user = options.user;
+    this.lazy = options.lazy; // 表明是computed watcher
+    this.dirty = this.lazy; // 判断要不要重新计算
     if (typeof exprOrFn === "function") {
       this.getters = exprOrFn;
     } else {
@@ -26,7 +28,7 @@ export default class Watcher {
       };
     }
 
-    this.value = this.get();
+    this.value = this.lazy ? undefined : this.get();
   }
 
   get() {
@@ -45,9 +47,23 @@ export default class Watcher {
     }
   }
   update() {
-    // 每次watcher.update调用时，先缓存起来，之后一起更新
-    queueWatcher(this);
+    // 计算watcher
+    if (this.lazy) {
+      this.dirty = true;
+    } else {
+      // 渲染watcher
+      // 每次watcher.update调用时，先缓存起来，之后一起更新
+      queueWatcher(this);
+    }
   }
+  evaluate() {
+    this.value = this.get();
+    this.dirty = false;
+  }
+  depend() {
+    this.deps.forEach((dep) => dep.depend());
+  }
+
   run() {
     const newVal = this.get();
     const oldVal = this.value;

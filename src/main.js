@@ -6,7 +6,7 @@ My_Vue.mixin({
     console.log("== mixin|created");
   },
   mounted() {
-    console.log("== mixin|mounted: this", JSON.parse(JSON.stringify(this)));
+    console.log("== mixin|mounted: this", this);
   },
   // data 只能为函数
   data() {
@@ -34,6 +34,12 @@ const options = {
     },
     num: 990,
   },
+
+  computed: {
+    a2() {
+      return this.a + this.a;
+    },
+  },
   watch: {
     a(newVal, oldVal) {
       console.log("user - watch | a", newVal, oldVal);
@@ -49,10 +55,10 @@ const options = {
     },
   },
   beforeCreate() {
-    console.log("== beforeCreate:this", JSON.parse(JSON.stringify(this)));
+    console.log("== beforeCreate:this", this);
   },
   created() {
-    console.log("== created:this", JSON.parse(JSON.stringify(this)));
+    console.log("== created:this", this);
   },
 };
 const app = new My_Vue(options);
