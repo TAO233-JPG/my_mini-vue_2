@@ -34,6 +34,20 @@ const options = {
     },
     num: 990,
   },
+  watch: {
+    a(newVal, oldVal) {
+      console.log("user - watch | a", newVal, oldVal);
+    },
+    "cat.age": function (newVal, oldVal) {
+      console.log("user - watch | cat.age", newVal, oldVal);
+    },
+    "cat.name": {
+      handler: function (newVal, oldVal) {
+        console.log("user - watch - immediate | cat.name", newVal, oldVal);
+      },
+      immediate: true,
+    },
+  },
   beforeCreate() {
     console.log("== beforeCreate:this", JSON.parse(JSON.stringify(this)));
   },

@@ -1,5 +1,6 @@
 import { pushTarget, popTarget } from "./Dep";
 import { queueWatcher } from "./scheduler";
+import { isObject } from "../utils/index";
 let id = 0;
 
 export default class Watcher {
@@ -11,18 +12,28 @@ export default class Watcher {
 
     this.deps = [];
     this.depsId = new Set();
-
+    this.user = options.user;
     if (typeof exprOrFn === "function") {
       this.getters = exprOrFn;
+    } else {
+      this.getters = function () {
+        const path = exprOrFn.split(".");
+        let obj = vm;
+        path.forEach((p) => {
+          obj = obj[p];
+        });
+        return obj;
+      };
     }
 
-    this.get();
+    this.value = this.get();
   }
 
   get() {
     pushTarget(this);
-    this.getters();
+    const res = this.getters.call(this.vm);
     popTarget(this);
+    return res;
   }
 
   addDep(dep) {
@@ -38,6 +49,15 @@ export default class Watcher {
     queueWatcher(this);
   }
   run() {
-    this.get();
+    const newVal = this.get();
+    const oldVal = this.value;
+    this.value = newVal;
+    if (this.user) {
+      if (newVal !== oldVal || isObject(newVal)) {
+        this.cb.call(this.vm, newVal, oldVal);
+      }
+    } else {
+      this.cb.call(this.vm);
+    }
   }
 }

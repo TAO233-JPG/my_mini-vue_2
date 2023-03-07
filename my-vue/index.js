@@ -2,6 +2,7 @@ import initState from "./state";
 import compileToFunction from "./compiler";
 import renderMixin from "./render";
 import mountComponent, { callHook, lifecycleMixin } from "./lifecycle";
+import Watcher from "./observer/Watcher";
 import mergeOptions from "./glabal-api/mergeOption";
 import initGlobalApi from "./glabal-api/initGlobalApi";
 
@@ -45,6 +46,15 @@ My_Vue.prototype.$mount = function (el) {
   }
 
   return mountComponent(vm, element);
+};
+My_Vue.prototype.$watch = function (exprOrFn, cb, options) {
+  const vm = this;
+  //  user: true 这里表示是一个用户watcher
+  let watcher = new Watcher(vm, exprOrFn, cb, { ...options, user: true });
+  // 如果有immediate属性 代表需要立即执行回调
+  if (options.immediate) {
+    cb(); //如果立刻执行
+  }
 };
 
 initGlobalApi(My_Vue);

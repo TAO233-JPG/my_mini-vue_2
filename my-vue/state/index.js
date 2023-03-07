@@ -1,4 +1,5 @@
 import initData from "./initData";
+import initWatch from "./initWatch";
 
 export default function initState(vm) {
   const opts = vm.$options;
@@ -17,6 +18,6 @@ export default function initState(vm) {
     // initComputed(vm);
   }
   if (opts.watch) {
-    // initWatch(vm);
+    initWatch(vm);
   }
 }
