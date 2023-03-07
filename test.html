@@ -41,7 +41,7 @@
 
       // 实现异步队列机制
       function queueWatcher(watcher) {
-        console.log('queueWatcher', watcher.id);
+        console.log("queueWatcher", watcher.id);
         const id = watcher.id;
         //   watcher去重
         if (has[id] === undefined) {
@@ -59,7 +59,7 @@
       function flushCallbacks() {
         pending = false; //把标志还原为false
         // 依次执行回调
-        console.log(' = flushCallbacks | callbacks', callbacks);
+        console.log(" = flushCallbacks | callbacks", callbacks);
         for (let i = 0; i < callbacks.length; i++) {
           callbacks[i]();
         }
@@ -68,16 +68,16 @@
       const p = Promise.resolve();
       //定义异步方法  采用优雅降级
       const timerFunc = () => {
-        console.log('ONCE = ,timerFunc');
+        console.log("ONCE = ,timerFunc");
         p.then(flushCallbacks);
       };
 
       function nextTick(cb) {
         // 除了渲染watcher  还有用户自己手动调用的nextTick 一起被收集到数组
         callbacks.push(cb);
-        console.log('nextTick');
+        console.log("nextTick");
         if (!pending) {
-          console.log('nextTick // !pending');
+          console.log("nextTick // !pending");
           // 如果多次调用nextTick  只会执行一次异步 等异步队列清空之后再把标志变为false
           pending = true;
           timerFunc();
@@ -115,8 +115,39 @@
       w2.update();
       w3.update();
 
+      // 1_7_6_8_2_4_3_5_9_11_10_12
 
-      // 1_7_6_8_2_4_3_5_9_11_10_12 
+      const obj = {
+        a: 1,
+        b() {},
+      };
+
+      for (let key in obj) {
+        console.log("+", key, obj.hasOwnProperty(key));
+      }
+      const a = obj.a === void 0 ? 1 : 2;
+      const c = obj.c === void 0 ? 1 : 2;
+      console.log("+", a, c);
+    </script>
+    <script>
+      const strats = {};
+      const ASSETS_TYPE = ["component", "directive", "filter"];
+      // 组件 指令 过滤器的合并策略
+      function mergeAssets(parentVal, childVal) {
+        const res = Object.create(parentVal); //比如有同名的全局组件和自己定义的局部组件 那么parentVal代表全局组件 自己定义的组件是childVal  首先会查找自已局部组件有就用自己的  没有就从原型继承全局组件  res.__proto__===parentVal
+        if (childVal) {
+          for (let k in childVal) {
+            res[k] = childVal[k];
+          }
+        }
+        return res;
+      }
+
+      // 定义组件的合并策略
+      ASSETS_TYPE.forEach((type) => {
+        strats[type + "s"] = mergeAssets;
+      });
+      console.log("--", strats);
     </script>
   </body>
 </html>

@@ -9,6 +9,7 @@ export const LIFECYCLE_HOOKS = [
   "beforeDestroy",
   "destroyed",
 ];
+const ASSETS_TYPE = ["component", "directive", "filter"];
 
 //生命周期合并策略
 function mergeHook(parentVal, childVal) {
@@ -25,6 +26,17 @@ function mergeHook(parentVal, childVal) {
     return parentVal;
   }
 }
+
+function mergeAssets(parentVal, childVal) {
+  const res = Object.create(parentVal); //比如有同名的全局组件和自己定义的局部组件 那么parentVal代表全局组件 自己定义的组件是childVal  首先会查找自已局部组件有就用自己的  没有就从原型继承全局组件  res.__proto__===parentVal
+  if (childVal) {
+    for (let k in childVal) {
+      res[k] = childVal[k];
+    }
+  }
+  return res;
+}
+
 // 合并策略
 const strats = {};
 
@@ -33,6 +45,10 @@ LIFECYCLE_HOOKS.forEach((hook) => {
   strats[hook] = mergeHook;
 });
 
+// 组件 指令 过滤器的合并策略
+ASSETS_TYPE.forEach((type) => {
+  strats[type + "s"] = mergeAssets;
+});
 // mixin核心方法
 export default function mergeOptions(parent, child) {
   const options = {};
@@ -52,7 +68,6 @@ export default function mergeOptions(parent, child) {
     if (strats[k]) {
       options[k] = strats[k](parent[k], child[k]);
     } else {
-      // console.log("k", k);
       // 默认策略
       options[k] = child[k] ? child[k] : parent[k];
       // 混入data

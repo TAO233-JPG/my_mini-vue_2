@@ -1,5 +1,6 @@
 import My_Vue from "../my-vue";
 
+// 混入
 My_Vue.mixin({
   created() {
     console.log("== mixin|created");
@@ -15,9 +16,14 @@ My_Vue.mixin({
     };
   },
 });
+// 全局组件
+My_Vue.component("parent-component", {
+  template: `<div>我是全局组件</div>`,
+});
 
 const options = {
   el: "#app",
+  // 用到mixin时， data不能为funtion
   data: {
     a: 1,
     mixinB: "mixinB,在mixin和实例中，这是实例数据",

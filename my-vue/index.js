@@ -30,9 +30,8 @@ My_Vue.prototype.$mount = function (el) {
   const element = document.querySelector(el);
 
   // 没有渲染函数，需生成
+  let template = options.template;
   if (!options.render) {
-    let template = options.template;
-
     if (!template && element) {
       template = element.outerHTML;
     }

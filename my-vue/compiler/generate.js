@@ -53,9 +53,10 @@ function genProps(attrs) {
         let [key, value] = item.split(":");
         obj[key] = value;
       });
-      attr.value = obj;
+      str += `${attr.name}:${JSON.stringify(obj)},`;
+    } else {
+      str += `${attr.name}:${JSON.stringify(attr.value)},`;
     }
-    str += `${attr.name}:${JSON.stringify(attr.value)},`;
   }
   return `{${str.slice(0, -1)}}`;
 }

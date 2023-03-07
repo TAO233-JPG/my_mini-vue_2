@@ -6,11 +6,17 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Vue</title>
+  <style>
+    html,body {
+    height:100%
+    }
+
+  </style>
 </head>
 
 <body>
   <h1>My Vue</h1>
-  <div id="app" style="height: 130px" class="content">
+  <div id="app" style="width: 300px;color: #333;" class="content">
     <div>a: <span>{{a}}</span></div>
     <div>list: <span>{{list}}</span></div>
     <div>
@@ -20,6 +26,10 @@
     <div>age:<span>{{cat.age}}</span></div>
     <div>{{mixinA}}</div>
     <div>{{mixinB}}</div>
+    <div>==组件==
+
+      <parent-component></parent-component>
+    </div>
   </div>
 </div>
 <!-- <div>mixin: {{m}}</div> -->

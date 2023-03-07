@@ -1,4 +1,9 @@
 export default function patch(oldVnode, vnode) {
+  // 组件的创建过程是没有el属性的
+  if (!oldVnode) {
+    return createElm(vnode);
+  }
+
   const isRealElement = oldVnode?.nodeType;
 
   // 初次渲染
@@ -13,19 +18,20 @@ export default function patch(oldVnode, vnode) {
   } else {
     // 标签不一样，直接替换
     if (oldVnode.tag !== vnode.tag) {
-      oldVnode.el.parentNode.replaceChild(createElm(vnode), oldVnode.el);
-      return;
+      const newEl = createElm(vnode);
+      oldVnode.el.parentNode.replaceChild(newEl, oldVnode.el);
+      return newEl;
     }
 
     // 文本节点
     if (!oldVnode.tag) {
       if (oldVnode.text !== vnode.text) {
-        console.log("wenbenjiedian", oldVnode);
         oldVnode.el.textContent = vnode.text;
       }
     }
 
     const el = (vnode.el = oldVnode.el);
+
     updateProperties(vnode, oldVnode.data); // 更新属性
     const oldCh = oldVnode.children ?? [];
     const newCh = vnode.children ?? [];
@@ -38,6 +44,22 @@ export default function patch(oldVnode, vnode) {
     } else if (newCh.length > 0) {
       newCh.forEach((item) => el.appendChild(createElm(item)));
     }
+    return el;
+  }
+}
+
+// 判断是否是组件Vnode
+function isComponent(vnode) {
+  // 初始化组件
+  // 创建组件实例
+  let i = vnode.data;
+  //   下面这句话很关键 调用组件data.hook.init方法进行组件初始化过程 最终组件的vnode.componentInstance.$el就是组件渲染好的真实dom
+  if ((i = i.hook) && (i = i.init)) {
+    i(vnode);
+  }
+  // 如果组件实例化完毕有componentInstance属性 那证明是组件
+  if (vnode.componentInstance) {
+    return true;
   }
 }
 
@@ -46,6 +68,10 @@ function createElm(vnode) {
   let { tag, data, key, children, text } = vnode;
 
   if (typeof tag === "string") {
+    if (isComponent(vnode)) {
+      // 如果是组件 返回真实组件渲染的真实dom
+      return (vnode.el = vnode.componentInstance.$el);
+    }
     vnode.el = document.createElement(tag);
     updateProperties(vnode);
 

@@ -12,7 +12,7 @@ export default function renderMixin(Vue) {
   Vue.prototype.$nextTick = nextTick;
   // 创建虚拟dom
   Vue.prototype._c = function (...args) {
-    return createElement(...args);
+    return createElement(this, ...args);
   };
   // 创建虚拟文本节点
   Vue.prototype._v = function (text) {
